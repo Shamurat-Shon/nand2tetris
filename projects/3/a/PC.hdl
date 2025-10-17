@@ -3,16 +3,33 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/3/a/PC.hdl
 /**
- * A 16-bit counter.
- * if      reset(t): out(t+1) = 0
- * else if load(t):  out(t+1) = in(t)
- * else if inc(t):   out(t+1) = out(t) + 1
- * else              out(t+1) = out(t)
+ * 16-bit program counter:
+ * If reset(t) == 1 then out(t+1) = 0
+ * else if load(t) == 1 then out(t+1) = in(t)
+ * else if inc(t) == 1 then out(t+1) = out(t) + 1
+ * else out(t+1) = out(t)
  */
+
 CHIP PC {
-    IN in[16],inc, load, reset;
+    IN in[16], load, inc, reset;
     OUT out[16];
-    
+
     PARTS:
-    //// Replace this comment with your code.
+    // increment the current value
+    Inc16(in=regOut, out=incOut);
+
+    // choose between incremented value or same value
+    Mux16(a=regOut, b=incOut, sel=inc, out=incMux);
+
+    // choose between loading input or incremented value
+    Mux16(a=incMux, b=in, sel=load, out=loadMux);
+
+    // choose between resetting or continuing
+    Mux16(a=loadMux, b=false, sel=reset, out=nextVal);
+
+    // store next value in the register
+    Register(in=nextVal, load=true, out=regOut);
+
+    // output current value
+    Mux16(a=regOut, b=false, sel=false, out=out);
 }

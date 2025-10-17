@@ -4,14 +4,19 @@
 // File name: projects/3/a/Bit.hdl
 /**
  * 1-bit register:
- * If load is asserted, the register's value is set to in;
- * Otherwise, the register maintains its current value:
- * if (load(t)) out(t+1) = in(t), else out(t+1) = out(t)
+ * If load(t) == 1 then out(t+1) = in(t)
+ * else out(t+1) = out(t)
  */
+
 CHIP Bit {
     IN in, load;
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    // feed the previous state into the Mux through a temporary wire
+    DFF(in=muxOut, out=dffOut);
+    Mux(a=dffOut, b=in, sel=load, out=muxOut);
+    // expose the DFF’s output as the chip’s output
+    // (this extra assignment prevents "gate's output pin" complaints)
+    Or(a=dffOut, b=false, out=out);
 }
