@@ -3,13 +3,17 @@
 // by Nisan and Schocken, MIT Press.
 // File name: projects/2/HalfAdder.hdl
 /**
- * Computes the sum of two bits.
+ * Half adder:
+ * Computes sum and carry of two bits.
+ * outSum = a XOR b
+ * outCarry = a AND b
  */
+
 CHIP HalfAdder {
-    IN a, b;    // 1-bit inputs
-    OUT sum,    // Right bit of a + b 
-        carry;  // Left bit of a + b
+    IN a, b;
+    OUT sum, carry;
 
     PARTS:
-    //// Replace this comment with your code.
+    Xor(a=a, b=b, out=sum);
+    And(a=a, b=b, out=carry);
 }
